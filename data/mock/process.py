@@ -3,6 +3,7 @@ import os
 
 YEAR = 305  # start year of season 8
 FILE = "chars/test.json"
+MAX_AGE = 100
 
 
 def parseDate(dateString):
@@ -20,7 +21,7 @@ def parseDate(dateString):
             l.append(-int(a))
 
     if not l:
-        return ""
+        return 0
 
     return sum(l) / len(l)
 
@@ -40,17 +41,24 @@ for c in j:
 
     nc["birth"] = ""
     nc["death"] = ""
+    nc["dead"] = 0
+    nc["alive"] = 0
 
     if c["born"]:
         nc["birth"] = parseDate(c["born"])
+        if YEAR - nc["birth"] > MAX_AGE:
+            nc["dead"] = 1
+
     if c["died"]:
         nc["death"] = parseDate(c["died"])
+        nc["dead"] = 1
 
     if nc["birth"] and nc["death"]:
         nc["age"] = abs(nc["death"] - nc["birth"])
         cc += 1
     elif nc["birth"]:
         nc["age"] = abs(YEAR - nc["birth"])
+        nc["alive"] = 1
         cc += 1
     else:
         nc["age"] = ""
